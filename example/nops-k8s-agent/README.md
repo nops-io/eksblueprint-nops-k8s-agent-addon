@@ -20,8 +20,7 @@ Deploy Nops Agent with custom `values.yaml`
 default_helm_values = [templatefile("${path.module}/values.yaml", {
     operating_system = "linux"
     region           = var.addon_context.aws_region_name,
-    app_nops_k8s_collector_api_key = var.app_nops_k8s_collector_api_key,
-    app_nops_k8s_collector_aws_account_number = var.app_nops_k8s_collector_aws_account_number
+    app_nops_k8s_collector_api_key = var.app_nops_k8s_collector_api_key
     app_prometheus_server_endpoint = var.app_prometheus_server_endpoint
     app_nops_k8s_agent_clusterid  = var.app_nops_k8s_agent_clusterid
     app_nops_k8s_collector_skip_ssl = var.app_nops_k8s_collector_skip_ssl
@@ -38,6 +37,20 @@ These are required variables defination:
 
 
 ```
+cd examples/nops-k8s-agent
+terraform init
+```
+```
+Run Terraform plan to verify the resources created by this execution.
+``
+export AWS_REGION=<enter-your-region>   # Select your own region
+terraform plan
+```
+terraform apply
+```
+
+Enter `yes` to apply.
+
 These above values if changed in the directory will become the new default. You can override these values during deployment of the agent via helm repo.
 
 Once deployed, you can see nops agent pod in the `nops-k8s-agent` namespace.
