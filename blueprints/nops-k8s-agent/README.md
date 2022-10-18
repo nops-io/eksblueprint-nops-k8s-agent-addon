@@ -33,6 +33,15 @@ data:
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
+Deploy Prometheus
+
+You can use your own Prometheus instance or launching your nops-k8s-agent namespace
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/kube-prometheus-stack
+
+or use your own deployed prometheus url in "app_prometheus_server_endpoint" variable.
+
 
 ## Providers
 
@@ -48,7 +57,9 @@ data:
 
 ## Resources
 
-No resources.
+[kubernetes_secret.nops_secrets](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secrets) | resource |
+| [aws_eks_cluster.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
@@ -60,5 +71,5 @@ No resources.
 
 
 ## Outputs 
-
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
+<!--- END_TF_DOCS --->

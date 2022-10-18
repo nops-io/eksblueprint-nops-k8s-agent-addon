@@ -1,94 +1,73 @@
-# Nops agent with EKS
+# Nops k8s Agent
 
-This example deploys an EKS Cluster running the Nops k8s agent into a new VPC.
+This add-on configures [nops-k8s-agent](https://github.com/nops-io/nops-k8s-agent)
 
-- Creates a new sample VPC, 3 Private Subnets and 3 Public Subnets
-- Creates Internet gateway for Public Subnets and NAT Gateway for Private Subnets
-- Creates EKS Cluster Control plane with public endpoint (for demo reasons only) with one managed node group
-- Deploys Prometheus
+Worker contains database to keep users entries and pulls metadata from their accounts on a scheduled basis.
 
-This will install the Kubernetes Operator for Apache Spark into the namespace spark-operator.
-The operator by default watches and handles SparkApplications in all namespaces.
-If you would like to limit the operator to watch and handle SparkApplications in a single namespace, e.g., default instead, add the following option to the helm install command:
 
-## Prerequisites
+## Usage
 
-Ensure that you have installed the following tools on your machine.
+[nOps Agent](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons/nops-k8s-agent) can be deployed by enabling the add-on via the following.
 
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+```hcl
+enable_nops_k8s_agent = true
 
-## Step 1: Deploy EKS Cluster with Spark-K8s-Operator feature
+Deploy Nops Agent with custom `values.yaml`
 
-Clone the repository
 
-```
-git clone https://github.com/aws-ia/terraform-aws-eks-blueprints.git
-```
+#All the apps_nops variable values needs to be pass 
 
-Apply all the value in the variable defined 
+default_helm_values = [templatefile("${path.module}/values.yaml", {
+    operating_system = "linux"
+    region           = var.addon_context.aws_region_name,
+    app_nops_k8s_collector_api_key = var.app_nops_k8s_collector_api_key
+    app_prometheus_server_endpoint = var.app_prometheus_server_endpoint
+    app_nops_k8s_agent_clusterid  = var.app_nops_k8s_agent_clusterid
+    app_nops_k8s_collector_skip_ssl = var.app_nops_k8s_collector_skip_ssl
+    app_nops_k8s_agent_prom_token = var.app_nops_k8s_agent_prom_token
+    
+      })]
 
-```### Enable nops agent and variables values######################
-  enable_nops_k8s_agent = true
+These are required variables defination:
 
-  app_nops_k8s_collector_api_key = "xxxxxxxxxxxxxxxxxxxxx" #Api key of nops account 
-  app_prometheus_server_endpoint = "http://prometheus-operator-kube-p-prometheus.nops-k8s-agent.svc.cluster.local:9090"
-  app_nops_k8s_agent_clusterid  =  module.eks_blueprints.eks_cluster_id
-  app_nops_k8s_collector_skip_ssl = ""
-  app_nops_k8s_agent_prom_token = ""
-```
-Navigate into one of the example directories and run `terraform init`
+    APP_PROMETHEUS_SERVER_ENDPOINT - Depends on your Prometheus stack installation (different for every person and every cluster).
+    APP_NOPS_K8S_AGENT_CLUSTER_ID - needs to match with your cluster id
+    APP_NOPS_K8S_COLLECTOR_API_KEY - See, nOps Developer API to learn how to get your API key. https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api
+    APP_NOPS_K8S_COLLECTOR_AWS_ACCOUNT_NUMBER - The 12-digit unique account number of the AWS account, which is configured within nOps.
+
 
 ```
 cd examples/nops-k8s-agent
 terraform init
 ```
-
-Run Terraform plan to verify the resources created by this execution.
-
 ```
+Run Terraform plan to verify the resources created by this execution.
+``
 export AWS_REGION=<enter-your-region>   # Select your own region
 terraform plan
 ```
-
-**Deploy the pattern**
-
-```sh
 terraform apply
 ```
 
 Enter `yes` to apply.
 
-## Execute Sample Spark Job on EKS Cluster with Spark-k8s-operator
+These above values if changed in the directory will become the new default. You can override these values during deployment of the agent via helm repo.
+
+Once deployed, you can see nops agent pod in the `nops-k8s-agent` namespace.
 
 ```sh
-  cd examples/analytics/spark-k8s-operator/spark-samples
-  kubectl apply -f pyspark-pi-job.yaml
+$ kubectl get cronjob -n nops-k8s-agent
+
+NAME                                                          READY   UP-TO-DATE   AVAILABLE   AGE
+nops-k8s-agent-high                                           1/1     1            1           20m
 ```
 
-- Verify the Spark job status
+### GitOps Configuration
 
-```sh
-  kubectl get sparkapplications -n spark-team-a
+The following properties are made available for use when managing the add-on via GitOps
 
-  kubectl describe sparkapplication pyspark-pi -n spark-team-a
 ```
-
-## Cleanup
-
-To clean up your environment, destroy the Terraform modules in reverse order.
-
-Destroy the Kubernetes Add-ons, EKS cluster with Node groups and VPC
-
-```sh
-terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
-terraform destroy -target="module.eks_blueprints" -auto-approve
-terraform destroy -target="module.vpc" -auto-approve
-```
-
-Finally, destroy any additional resources that are not in the above modules
-
-```sh
-terraform destroy -auto-approve
+nops_k8s_agent = {
+  enable = true
+}
 ```
