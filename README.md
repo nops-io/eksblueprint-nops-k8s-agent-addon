@@ -1,26 +1,29 @@
 # Nops Agent Helm Chart
 
-This add-on configures [nops-k8s-agent](https://github.com/nops-io/nops-k8s-agent)
+This add-on configures [nops-k8s-agent](https://github.com/nops-io/nops-k8s-agent). Worker contains database to keep users entries and pulls metadata from their accounts on a scheduled basis.
 
-Worker contains database to keep users entries and pulls metadata from their accounts on a scheduled basis.
+## Secret
+Create a Secret for nops-k8s-agent with following values in it:
+1. `nops_api_key`  
+2. `aws_account_id`
 
-Create Secret "nops-k8s-agent" with following values in it.
+To learn how to create the `nops_api_key`, see [nOps API Key](https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api).
 
-    nops_api_key - Currently no support signature verification https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api
-    aws_account_id - The AWS account number of which is configured within nOps
+The `aws_account_id` refers to your AWS account number that is configured within nOps.
 
-Example Secret Manifest Reference
+> **Note:** Currently the agent does not support signature verification.
 
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: nops-k8s-agent
-  namespace: <same as nops-k8s-agent installation>
-data:
-  nops_api_key: YWRtaW4=
-  aws_account_id: MWYyZDFlMmU2N2Rm
+The following is an example of Secret Manifest Reference:
 
+    apiVersion: v1
+    kind: Secret
+    type: Opaque
+    metadata:
+      name: nops-k8s-agent
+      namespace: <same as nops-k8s-agent installation>
+    data:
+      nops_api_key: YWRtaW4=
+      aws_account_id: MWYyZDFlMmU2N2Rm
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -33,14 +36,14 @@ data:
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.4.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.10 |
 
-Deploy Prometheus
+## Deploy Prometheus
 
-You can use your own Prometheus instance or launching your nops-k8s-agent namespace
+You can use your own Prometheus instance or you can launch your nops-k8s-agent namespace directly:
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm install prometheus prometheus-community/kube-prometheus-stack
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm install prometheus prometheus-community/kube-prometheus-stack
 
-or use your own deployed prometheus url in "app_prometheus_server_endpoint" variable.
+To use your own Prometheus instance, use the deployed prometheus url in `app_prometheus_server_endpoint` variable.
 
 
 ## Providers
@@ -57,7 +60,9 @@ or use your own deployed prometheus url in "app_prometheus_server_endpoint" vari
 
 ## Resources
 
-[kubernetes_secret.nops_secrets](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secrets) | resource |
+| Name | Type |
+|------|------|
+| [kubernetes_secret.nops_secrets](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secrets) | resource |
 | [aws_eks_cluster.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
@@ -70,6 +75,8 @@ or use your own deployed prometheus url in "app_prometheus_server_endpoint" vari
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
 
 
-## Outputs 
-<a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
+## Outputs
+| Name | Description |
+|------|------|
+| <a name="output_argocd_gitops_config"></a> [argocd\_gitops\_config](#output\_argocd\_gitops\_config) | Configuration used for managing the add-on with ArgoCD |
 <!--- END_TF_DOCS --->
