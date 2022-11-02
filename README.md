@@ -73,6 +73,11 @@ To use your own Prometheus instance, use the deployed prometheus url in `app_pro
 | <a name="input_addon_context"></a> [addon\_context](#input\_addon\_context) | Input configuration for the addon | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>    irsa_iam_role_path             = string<br>    irsa_iam_permissions_boundary  = string<br>  })</pre> | n/a | yes |
 | <a name="input_helm_config"></a> [helm\_config](#input\_helm\_config) | Helm Config for nops. | `any` | `{}` | no |
 | <a name="input_manage_via_gitops"></a> [manage\_via\_gitops](#input\_manage\_via\_gitops) | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| <a name="input_app_nops_k8s_collector_api_key"></a> [app\_nops\_k8s\_collector\_api\_key](#input\app\_nops\_k8s\_collector\_api\_key) | API Key of nOps| `string` | `""` | yes |
+| <a name="input_app_prometheus_server_endpoint"></a> [app\_prometheus\_server\_endpoint](#input\app\_prometheus\_server\_endpoint) | Prometheus server endpoint| `string` | `""` | yes |
+| <a name="input_app_nops_k8s_agent_clusterid"></a> [app\_nops\_k8s\_agent\_clusterid](#input\app\_nops\_k8s\_agent\_clusterid) | NOPS agent cluster id| `any` | `{}` | yes |
+| <a name="input_app_nops_k8s_collector_skip_ssl"></a> [app\_nops\_k8s\_k8s\_collector\_skip\_ssl](#input\app\_nops\_k8s\_collector\_skip\_ssl) | NOPS collector aws account number| `any` | `{}` | yes |
+| <a name="input_app_nops_k8s_agent_prom_token"></a> [app\_nops\_k8s\_k8s\_agent\_prom\_token](#input\app\_nops\_k8s\_agent\_prom\_token) | App nops agent prometheus token| `any` | `{}` | yes |
 
 
 ## Outputs
