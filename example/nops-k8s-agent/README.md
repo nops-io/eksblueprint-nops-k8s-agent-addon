@@ -29,7 +29,6 @@ Required variables defination:
 * `APP_PROMETHEUS_SERVER_ENDPOINT` - Depends on your Prometheus stack installation (different for every person and every cluster).
 * `APP_NOPS_K8S_AGENT_CLUSTER_ID` - needs to match with your cluster ID.
 * `APP_NOPS_K8S_COLLECTOR_API_KEY` - See, nOps Developer API to learn how to get your API key. [nOps API Key](https://docs.nops.io/en/articles/5955764-getting-started-with-the-nops-developer-api)
-* `APP_NOPS_K8S_COLLECTOR_AWS_ACCOUNT_NUMBER` - The 12-digit unique account number of the AWS account, which is configured within nOps.
 
 ## Deployment
 
